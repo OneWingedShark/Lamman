@@ -1,6 +1,9 @@
 With
 Interfaces;
 
+Private With
+Ada.Streams;
+
 Package Ghost_CPU with Pure is
 
     -- Subtype rename of unsigned, 8-bit, modulo 256 numbers.
@@ -33,8 +36,11 @@ Package Ghost_CPU with Pure is
     -- General purpose registers.
     Subtype GP_Register is Register Range A..H;
 
+    -- Use 'Input and 'Output to read/write ASCII representation.
+    Type Code_Chunk     is Array(Byte range <>) of not null access Instruction
+      with Input => GHC, Output => GHC;
+
     -- Types representing memory of the emulates CPU.
-    Type Code_Chunk     is Array(Byte range <>) of not null access Instruction;
     Type Memory_Chunk   is Array(Byte range <>) of Byte;
     Type Register_Bank  is Array(Register) of Byte;
     Subtype Code_Bank   is Code_Chunk(Byte);
@@ -123,5 +129,24 @@ Private
          when others => raise Program_Error
         );
 
+
+    Package Parsing is
+      function Input(
+        Stream : not null access Ada.Streams.Root_Stream_Type'Class)
+        return  Code_Chunk;
+
+      procedure Output(
+        Stream : not null access Ada.Streams.Root_Stream_Type'Class;
+        Item   : in  Code_Chunk);
+    End Parsing;
+
+
+      function GHC(
+        Stream : not null access Ada.Streams.Root_Stream_Type'Class)
+        return  Code_Chunk renames Parsing.Input;
+
+      procedure GHC(
+        Stream : not null access Ada.Streams.Root_Stream_Type'Class;
+        Item   : in  Code_Chunk) renames Parsing.Output;
 
 end Ghost_CPU;

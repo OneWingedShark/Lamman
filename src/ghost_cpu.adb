@@ -1,5 +1,19 @@
 Package Body Ghost_CPU Is
 
+    -- Possible indices for parameters.
+    Type Parameter_Index is range 1..3;
+
+    Function Arity_Check(Index          : Parameter_Index;
+                         Instruction    : Ghost_CPU.Instruction)
+                         return Boolean is
+          (case Index is
+           when 1 => Instruction.Mnemonic not in Arity_0,
+           when 2 => Instruction.Mnemonic not in Arity_0 | Arity_1,
+           when 3 => Instruction.Mnemonic not in Arity_0 | Arity_1 | Arity_2,
+           when others => raise Program_Error
+          );
+
+
     Procedure Init ( Processor : in out CPU; Code : Code_Chunk ) is
     Begin
         Processor.Code:= Code &
@@ -7,9 +21,6 @@ Package Body Ghost_CPU Is
     End Init;
 
     Procedure Exec( Processor : in out CPU ) is
-
-        -- Possible indices for parameters.
-        Type Parameter_Index is range 1..3;
 
         -- Shorthand for the current instruction.
         Instruction : Ghost_CPU.Instruction renames
@@ -54,12 +65,7 @@ Package Body Ghost_CPU Is
         -------------------------------
 
         Function Arity_Check(Index : Parameter_Index) return Boolean is
-          (case Index is
-           when 1 => Instruction.Mnemonic not in Arity_0,
-           when 2 => Instruction.Mnemonic not in Arity_0 | Arity_1,
-           when 3 => Instruction.Mnemonic not in Arity_0 | Arity_1 | Arity_2,
-           when others => raise Program_Error
-          );
+          (Arity_Check(Index, Instruction));
 
         Function Fetch(Value : Byte; Style : Argument_Style) return Byte is
         (case Style is
@@ -207,4 +213,6 @@ Package Body Ghost_CPU Is
     End Exec;
 
 
+
+    Package Body Parsing is Separate;
 End Ghost_CPU;
