@@ -1,0 +1,43 @@
+project Lamman is
+
+   for Source_Dirs use ("src");
+   for Object_Dir use "obj";
+   for Exec_Dir use ".";
+
+   package Ide is
+      for Vcs_Kind use "Git";
+      for Documentation_Dir use "doc";
+   end Ide;
+
+   package Naming is
+      for Spec_Suffix ("ada") use ".ads";
+      for Body_Suffix ("ada") use ".adb";
+      for Separate_Suffix use ".ada";
+      for Casing use "lowercase";
+      for Dot_Replacement use "-";
+   end Naming;
+
+   package Builder is
+      for Default_Switches ("ada") use ("-j4", "-k", "-g", "-C", "-s");
+   end Builder;
+
+   package Compiler is
+      for Default_Switches ("ada") use ("-g", "-O3", "-gnatn", "-funroll-loops", "-ftest-coverage", "-fprofile-arcs", "-gnatQ", "-ffunction-sections", "-fdata-sections", "-gnatf", "-gnato", "-fstack-check", "-gnata", "-gnat12");
+   end Compiler;
+
+   package Binder is
+      for Default_Switches ("ada") use ("-shared");
+   end Binder;
+
+   package Linker is
+      for Default_Switches ("ada") use ("-g", "-fprofile-generate");
+   end Linker;
+
+   package Prove is
+      for Switches use ("-j4");
+   end Prove;
+
+   for Main use ("lamman.adb");
+
+end Lamman;
+

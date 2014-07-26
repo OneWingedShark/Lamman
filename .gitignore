@@ -1,8 +1,13 @@
-# Object file
+# Executables
+*.exe
+
+# Object file and dir
 *.o
+obj/**
 
 # Ada Library Information
 *.ali
+
 # =========================
 # Operating System Files
 # =========================
