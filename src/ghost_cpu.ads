@@ -38,7 +38,7 @@ Package Ghost_CPU with Pure is
 
     -- Use 'Input and 'Output to read/write ASCII representation.
     Type Code_Chunk     is Array(Byte range <>) of not null access Instruction
-      with Input => GHC, Output => GHC;
+      with Input => Parsing.Input, Output => Parsing.Output;
 
     -- Types representing memory of the emulates CPU.
     Type Memory_Chunk   is Array(Byte range <>) of Byte;
@@ -140,13 +140,5 @@ Private
         Item   : in  Code_Chunk);
     End Parsing;
 
-
-      function GHC(
-        Stream : not null access Ada.Streams.Root_Stream_Type'Class)
-        return  Code_Chunk renames Parsing.Input;
-
-      procedure GHC(
-        Stream : not null access Ada.Streams.Root_Stream_Type'Class;
-        Item   : in  Code_Chunk) renames Parsing.Output;
 
 end Ghost_CPU;
